@@ -1,0 +1,35 @@
+name: Generate API Documentation
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  generate-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'  # Specify the Node.js version you need
+
+    - name: Install apidoc
+      run: npm install -g apidoc
+
+    - name: Generate API documentation
+      run: apidoc -i apidocs/ -o docs
+
+    - name: Commit and push changes
+      run: |
+        git config --global user.name "rishing7"
+        git config --global user.email "rishing7@gmail.com"
+        git add docs
+        git commit -m "Update API documentation"
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
